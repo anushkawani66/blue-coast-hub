@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { CarbonMarketplace } from '@/components/marketplace/CarbonMarketplace';
 import { 
   Building2, 
   ShoppingCart, 
@@ -20,6 +21,9 @@ import {
 
 const CorporateDashboard: React.FC = () => {
   const { user, logout } = useAuth();
+  const [userBalance, setUserBalance] = useState(2500000); // ₹25,00,000
+  const [userOwnedCredits, setUserOwnedCredits] = useState(1550);
+  const [totalEarnings, setTotalEarnings] = useState(485000); // ₹4,85,000
 
   const portfolioStats = [
     {
@@ -31,7 +35,7 @@ const CorporateDashboard: React.FC = () => {
     },
     {
       title: 'Portfolio Value',
-      value: '₹21.68 L',
+      value: `₹${(userBalance/100000).toFixed(2)} L`,
       change: '+12.3% this quarter',
       icon: TrendingUp,
       color: 'text-mangrove-green'
@@ -44,13 +48,80 @@ const CorporateDashboard: React.FC = () => {
       color: 'text-trust-gold'
     },
     {
-      title: 'CO₂ Impact',
-      value: '3,200 tons',
-      change: 'Offset achieved',
+      title: 'Total Earnings',
+      value: `₹${(totalEarnings/100000).toFixed(2)} L`,
+      change: 'From credit sales',
       icon: Leaf,
       color: 'text-mangrove-medium'
     }
   ];
+
+  const availableCredits = [
+    {
+      id: 1,
+      projectName: 'Sundarbans Mangrove Conservation',
+      location: 'West Bengal, India',
+      ngo: 'Sundarbans Conservation Society',
+      rating: 4.9,
+      pricePerCredit: 40,
+      availableCredits: 850,
+      totalCredits: 1200,
+      cobenefits: ['Biodiversity Protection', 'Storm Surge Defense'],
+      verificationDate: '2024-01-15',
+      impact: {
+        hectares: 15.2,
+        trees: 3420,
+        community: 185
+      }
+    },
+    {
+      id: 2,
+      projectName: 'Coastal Resilience Initiative',
+      location: 'Gujarat, India',
+      ngo: 'Coastal Protection Foundation',
+      rating: 4.7,
+      pricePerCredit: 35,
+      availableCredits: 1200,
+      totalCredits: 1500,
+      cobenefits: ['Community Employment', 'Fisheries Enhancement'],
+      verificationDate: '2024-02-08',
+      impact: {
+        hectares: 22.1,
+        trees: 4850,
+        community: 342
+      }
+    },
+    {
+      id: 3,
+      projectName: 'Backwater Restoration Program',
+      location: 'Kerala, India',
+      ngo: 'Kerala Marine Foundation',
+      rating: 4.8,
+      pricePerCredit: 45,
+      availableCredits: 650,
+      totalCredits: 900,
+      cobenefits: ['Women Empowerment', 'Eco-tourism'],
+      verificationDate: '2024-01-22',
+      impact: {
+        hectares: 12.8,
+        trees: 2890,
+        community: 156
+      }
+    }
+  ];
+
+  const handlePurchaseCredits = (creditId: number, quantity: number, totalCost: number) => {
+    setUserBalance(prev => prev - totalCost);
+    setUserOwnedCredits(prev => prev + quantity);
+    console.log(`Purchased ${quantity} credits for ₹${totalCost}`);
+  };
+
+  const handleSellRequest = (pricePerCredit: number, quantity: number) => {
+    const earnings = pricePerCredit * quantity;
+    setTotalEarnings(prev => prev + earnings);
+    setUserOwnedCredits(prev => prev - quantity);
+    console.log(`Listed ${quantity} credits for sale at ₹${pricePerCredit} each`);
+  };
 
   const availableProjects = [
     {
@@ -169,76 +240,17 @@ const CorporateDashboard: React.FC = () => {
           })}
         </div>
 
-        {/* Marketplace Gallery */}
-        <Card className="card-elevated mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShoppingCart className="w-6 h-6 text-trust-gold" />
-              Carbon Credit Marketplace
-            </CardTitle>
-            <CardDescription>
-              High-quality, verified carbon credits from mangrove restoration projects
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {availableProjects.map((project) => (
-                <Card key={project.id} className="card-premium">
-                  <div className="aspect-video bg-gradient-nature rounded-lg mb-4 flex items-center justify-center">
-                    <Leaf className="w-8 h-8 text-white" />
-                  </div>
-                  
-                  <CardHeader className="pt-0">
-                    <div className="flex items-start justify-between mb-2">
-                      <CardTitle className="text-lg leading-tight">{project.name}</CardTitle>
-                      <div className="flex items-center gap-1 text-sm">
-                        <Star className="w-4 h-4 fill-trust-gold text-trust-gold" />
-                        <span className="font-medium">{project.rating}</span>
-                      </div>
-                    </div>
-                    
-                    <CardDescription className="space-y-1">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        {project.location}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        {project.ngo}
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-neutral-600">Price per credit</span>
-                        <span className="font-bold text-trust-gold">₹{project.price}</span>
-                      </div>
-                      
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-neutral-600">Available</span>
-                        <span className="font-semibold">{project.available} credits</span>
-                      </div>
-                      
-                      <Badge className="w-full justify-center bg-mangrove-light text-mangrove-dark">
-                        Co-benefit: {project.impact}
-                      </Badge>
-                      
-                      <Button className="w-full gradient-trust text-white font-semibold">
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Enhanced Marketplace */}
+        <CarbonMarketplace
+          credits={availableCredits}
+          userBalance={userBalance}
+          onPurchase={handlePurchaseCredits}
+          onSellRequest={handleSellRequest}
+          userOwnedCredits={userOwnedCredits}
+        />
 
         {/* Portfolio & Reporting */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
           {/* Owned Credits */}
           <Card className="card-elevated">
             <CardHeader>

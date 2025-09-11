@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { ProjectVerification } from '@/components/verification/ProjectVerification';
 import { 
   Shield, 
   Globe, 
@@ -20,6 +21,7 @@ import {
 
 const GovernmentDashboard: React.FC = () => {
   const { user, logout } = useAuth();
+  const [selectedProject, setSelectedProject] = useState<any>(null);
 
   const kpis = [
     {
@@ -55,40 +57,69 @@ const GovernmentDashboard: React.FC = () => {
   const verificationQueue = [
     {
       id: 1,
-      projectName: 'Mangrove Restoration Delta',
+      name: 'Mangrove Restoration Delta',
       ngo: 'Coastal Conservation NGO',
       location: 'Kutch, Gujarat',
-      submitted: '2 hours ago',
+      submittedDate: '2 hours ago',
+      reportType: 'Monitoring Report',
       priority: 'high',
-      type: 'Monitoring Report'
+      status: 'pending',
+      hectaresRestored: 12.5,
+      treesPlanted: 3420,
+      carbonCredits: 450,
+      communityMembers: 85,
+      images: ['img1.jpg', 'img2.jpg', 'img3.jpg'],
+      description: 'Comprehensive mangrove restoration project focusing on degraded coastal areas in the Kutch region.',
+      gpsCoordinates: '23.0225°N, 68.7167°E',
+      previousReports: 3
     },
     {
       id: 2,
-      projectName: 'Community Mangrove Initiative',
+      name: 'Community Mangrove Initiative',
       ngo: 'Sundarbans Welfare Society',
       location: 'Sundarbans, West Bengal',
-      submitted: '1 day ago',
+      submittedDate: '1 day ago',
+      reportType: 'Site Registration',
       priority: 'medium',
-      type: 'Site Registration'
+      status: 'pending',
+      hectaresRestored: 8.3,
+      treesPlanted: 2150,
+      carbonCredits: 320,
+      communityMembers: 142,
+      images: ['img1.jpg', 'img2.jpg'],
+      description: 'Community-led mangrove plantation program involving local fishermen and women self-help groups.',
+      gpsCoordinates: '21.9497°N, 88.2636°E',
+      previousReports: 1
     },
     {
       id: 3,
-      projectName: 'Backwater Restoration Program',
+      name: 'Backwater Restoration Program',
       ngo: 'Kerala Marine Foundation',
       location: 'Kochi, Kerala',
-      submitted: '2 days ago',
+      submittedDate: '2 days ago',
+      reportType: 'Progress Update',
       priority: 'low',
-      type: 'Progress Update'
+      status: 'pending',
+      hectaresRestored: 6.8,
+      treesPlanted: 1890,
+      carbonCredits: 280,
+      communityMembers: 67,
+      images: ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg'],
+      description: 'Restoration of degraded backwater ecosystems through native mangrove species plantation.',
+      gpsCoordinates: '9.9312°N, 76.2673°E',
+      previousReports: 5
     }
   ];
 
-  const stateStats = [
-    { state: 'West Bengal', projects: 342, credits: '847K', growth: '+12%' },
-    { state: 'Gujarat', projects: 289, credits: '723K', growth: '+18%' },
-    { state: 'Odisha', projects: 234, credits: '612K', growth: '+8%' },
-    { state: 'Tamil Nadu', projects: 198, credits: '534K', growth: '+15%' },
-    { state: 'Kerala', projects: 184, credits: '487K', growth: '+22%' }
-  ];
+  const handleApproveProject = (projectId: number, comments: string, creditsAwarded: number) => {
+    console.log(`Approved project ${projectId} with ${creditsAwarded} credits: ${comments}`);
+    // Update project status in real implementation
+  };
+
+  const handleRejectProject = (projectId: number, reason: string) => {
+    console.log(`Rejected project ${projectId}: ${reason}`);
+    // Update project status in real implementation
+  };
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
@@ -166,7 +197,7 @@ const GovernmentDashboard: React.FC = () => {
                 <div key={item.id} className="card-premium p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <h3 className="font-semibold text-neutral-900">{item.projectName}</h3>
+                      <h3 className="font-semibold text-neutral-900">{item.name}</h3>
                       <p className="text-sm text-neutral-600 flex items-center gap-1">
                         <Users className="w-4 h-4" />
                         {item.ngo}
@@ -175,27 +206,30 @@ const GovernmentDashboard: React.FC = () => {
                     {getPriorityBadge(item.priority)}
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-neutral-600">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        {item.location}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <FileCheck className="w-4 h-4" />
-                        {item.type}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {item.submitted}
-                      </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-sm text-neutral-600">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          {item.location}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <FileCheck className="w-4 h-4" />
+                          {item.reportType}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {item.submittedDate}
+                        </span>
+                      </div>
+                      
+                      <Button 
+                        onClick={() => setSelectedProject(item)}
+                        className="gradient-ocean text-white"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Review
+                      </Button>
                     </div>
-                    
-                    <Button className="gradient-ocean text-white">
-                      <Eye className="w-4 h-4 mr-2" />
-                      Review
-                    </Button>
-                  </div>
                 </div>
               ))}
             </div>
@@ -217,7 +251,13 @@ const GovernmentDashboard: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {stateStats.map((stat, index) => (
+                {[
+                  { state: 'West Bengal', projects: 342, credits: '847K', growth: '+12%' },
+                  { state: 'Gujarat', projects: 289, credits: '723K', growth: '+18%' },
+                  { state: 'Odisha', projects: 234, credits: '612K', growth: '+8%' },
+                  { state: 'Tamil Nadu', projects: 198, credits: '534K', growth: '+15%' },
+                  { state: 'Kerala', projects: 184, credits: '487K', growth: '+22%' }
+                ].map((stat, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
                     <div>
                       <p className="font-semibold text-neutral-900">{stat.state}</p>
@@ -281,6 +321,16 @@ const GovernmentDashboard: React.FC = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Project Verification Modal */}
+        {selectedProject && (
+          <ProjectVerification
+            project={selectedProject}
+            onApprove={handleApproveProject}
+            onReject={handleRejectProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        )}
       </div>
     </div>
   );

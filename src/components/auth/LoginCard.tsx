@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserType } from '@/types/auth';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
-import { Loader2, Shield, Users, Building2 } from 'lucide-react';
+import { Loader2, Shield, Users, Building2, UserPlus, LogIn } from 'lucide-react';
 
 interface LoginCardProps {
   userType: UserType;
@@ -43,16 +44,27 @@ const getUserTypeConfig = (type: UserType) => {
 };
 
 export const LoginCard: React.FC<LoginCardProps> = ({ userType }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState('login');
+  
+  // Login form state
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  
+  // Signup form state
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [organization, setOrganization] = useState('');
+  
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
   const config = getUserTypeConfig(userType);
   const Icon = config.icon;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!loginEmail || !loginPassword) {
       toast({
         title: 'Missing Information',
         description: 'Please enter both email and password.',
@@ -62,7 +74,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({ userType }) => {
     }
 
     try {
-      await login(email, password, userType);
+      await login(loginEmail, loginPassword, userType);
       toast({
         title: 'Welcome to BlueTrust',
         description: 'Successfully logged in to your dashboard.',
@@ -72,6 +84,53 @@ export const LoginCard: React.FC<LoginCardProps> = ({ userType }) => {
       toast({
         title: 'Login Failed',
         description: 'Please check your credentials and try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!signupEmail || !signupPassword || !confirmPassword || !fullName) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in all required fields.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (signupPassword !== confirmPassword) {
+      toast({
+        title: 'Password Mismatch',
+        description: 'Passwords do not match. Please try again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (signupPassword.length < 6) {
+      toast({
+        title: 'Weak Password',
+        description: 'Password must be at least 6 characters long.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      // Simulate signup process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await login(signupEmail, signupPassword, userType);
+      toast({
+        title: 'Account Created Successfully',
+        description: 'Welcome to BlueTrust! Your account has been created.',
+      });
+      navigate(`/${userType}/dashboard`);
+    } catch (error) {
+      toast({
+        title: 'Signup Failed',
+        description: 'Unable to create account. Please try again.',
         variant: 'destructive',
       });
     }
@@ -93,56 +152,166 @@ export const LoginCard: React.FC<LoginCardProps> = ({ userType }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-neutral-700">
-              Email Address
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder={config.placeholder}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-12"
-              required
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-neutral-700">
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-12"
-              required
-            />
-          </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login" className="flex items-center gap-2">
+              <LogIn className="w-4 h-4" />
+              Login
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="flex items-center gap-2">
+              <UserPlus className="w-4 h-4" />
+              Sign Up
+            </TabsTrigger>
+          </TabsList>
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full h-12 text-white font-semibold ${config.gradient} hover:opacity-90 transition-all duration-300 shadow-medium hover:shadow-strong`}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Signing In...
-              </>
-            ) : (
-              'Sign In to Dashboard'
-            )}
-          </Button>
-        </form>
+          <TabsContent value="login" className="space-y-6 mt-6">
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="login-email" className="text-sm font-medium text-neutral-700">
+                  Email Address
+                </Label>
+                <Input
+                  id="login-email"
+                  type="email"
+                  placeholder={config.placeholder}
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className="h-12"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="login-password" className="text-sm font-medium text-neutral-700">
+                  Password
+                </Label>
+                <Input
+                  id="login-password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  className="h-12"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full h-12 text-white font-semibold ${config.gradient} hover:opacity-90 transition-all duration-300 shadow-medium hover:shadow-strong`}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Signing In...
+                  </>
+                ) : (
+                  'Sign In to Dashboard'
+                )}
+              </Button>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="signup" className="space-y-6 mt-6">
+            <form onSubmit={handleSignup} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="signup-name" className="text-sm font-medium text-neutral-700">
+                  Full Name
+                </Label>
+                <Input
+                  id="signup-name"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="h-12"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-email" className="text-sm font-medium text-neutral-700">
+                  Email Address
+                </Label>
+                <Input
+                  id="signup-email"
+                  type="email"
+                  placeholder={config.placeholder}
+                  value={signupEmail}
+                  onChange={(e) => setSignupEmail(e.target.value)}
+                  className="h-12"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="organization" className="text-sm font-medium text-neutral-700">
+                  Organization {userType === 'ngo' ? '(Optional)' : ''}
+                </Label>
+                <Input
+                  id="organization"
+                  type="text"
+                  placeholder={userType === 'ngo' ? 'Your NGO/Community name' : 
+                              userType === 'government' ? 'Government department' : 
+                              'Company name'}
+                  value={organization}
+                  onChange={(e) => setOrganization(e.target.value)}
+                  className="h-12"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="signup-password" className="text-sm font-medium text-neutral-700">
+                  Password
+                </Label>
+                <Input
+                  id="signup-password"
+                  type="password"
+                  placeholder="Create a strong password"
+                  value={signupPassword}
+                  onChange={(e) => setSignupPassword(e.target.value)}
+                  className="h-12"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password" className="text-sm font-medium text-neutral-700">
+                  Confirm Password
+                </Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="h-12"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full h-12 text-white font-semibold ${config.gradient} hover:opacity-90 transition-all duration-300 shadow-medium hover:shadow-strong`}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  'Create Account'
+                )}
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-neutral-500">
-            Demo credentials: Use any email and password
+            Demo mode: Use any credentials to continue
           </p>
         </div>
       </CardContent>
