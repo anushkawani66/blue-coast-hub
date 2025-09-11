@@ -1,58 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* BlueTrust Design System - Professional blockchain platform for blue carbon credits */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    /* Core Ocean-inspired palette */
+    --ocean-deep: 210 100% 12%;
+    --ocean-blue: 210 85% 25%;
+    --ocean-medium: 210 70% 45%;
+    --ocean-light: 210 60% 85%;
+    --ocean-surface: 210 40% 96%;
+    
+    /* Mangrove Green palette */
+    --mangrove-dark: 152 65% 15%;
+    --mangrove-green: 152 70% 35%;
+    --mangrove-medium: 152 50% 55%;
+    --mangrove-light: 152 30% 85%;
+    --mangrove-surface: 152 20% 96%;
+    
+    /* Trust & Premium palette */
+    --trust-gold: 45 95% 55%;
+    --trust-sunrise: 25 90% 60%;
+    --trust-amber: 35 85% 65%;
+    
+    /* System colors */
+    --success: 152 70% 35%;
+    --warning: 45 95% 55%;
+    --error: 0 84% 60%;
+    --info: 210 85% 25%;
+    
+    /* Neutral palette for balance */
+    --neutral-50: 210 20% 98%;
+    --neutral-100: 210 15% 95%;
+    --neutral-200: 210 12% 90%;
+    --neutral-300: 210 10% 80%;
+    --neutral-400: 210 8% 60%;
+    --neutral-500: 210 6% 45%;
+    --neutral-600: 210 8% 35%;
+    --neutral-700: 210 10% 25%;
+    --neutral-800: 210 15% 15%;
+    --neutral-900: 210 20% 8%;
+    
+    /* Design system mapping */
+    --background: var(--neutral-50);
+    --foreground: var(--neutral-900);
+    
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: var(--neutral-900);
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --popover-foreground: var(--neutral-900);
+    
+    --primary: var(--ocean-blue);
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: var(--ocean-light);
+    --secondary-foreground: var(--ocean-deep);
+    
+    --muted: var(--neutral-100);
+    --muted-foreground: var(--neutral-500);
+    
+    --accent: var(--mangrove-light);
+    --accent-foreground: var(--mangrove-dark);
+    
+    --success: var(--success);
+    --success-foreground: 0 0% 100%;
+    
+    --warning: var(--warning);
+    --warning-foreground: var(--neutral-900);
+    
+    --destructive: var(--error);
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: var(--neutral-200);
+    --input: var(--neutral-200);
+    --ring: var(--ocean-medium);
+    
+    --radius: 0.75rem;
+    
+    /* Professional gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(var(--ocean-deep)), hsl(var(--ocean-blue)));
+    --gradient-trust: linear-gradient(135deg, hsl(var(--ocean-blue)), hsl(var(--trust-gold)));
+    --gradient-nature: linear-gradient(135deg, hsl(var(--mangrove-green)), hsl(var(--ocean-medium)));
+    --gradient-premium: linear-gradient(135deg, hsl(var(--trust-gold)), hsl(var(--trust-sunrise)));
+    --gradient-surface: linear-gradient(180deg, hsl(var(--neutral-50)), hsl(var(--neutral-100)));
+    
+    /* Professional shadows */
+    --shadow-soft: 0 2px 8px hsl(var(--neutral-900) / 0.04);
+    --shadow-medium: 0 4px 20px hsl(var(--neutral-900) / 0.08);
+    --shadow-strong: 0 8px 32px hsl(var(--neutral-900) / 0.12);
+    --shadow-ocean: 0 8px 32px hsl(var(--ocean-blue) / 0.15);
+    --shadow-success: 0 4px 20px hsl(var(--success) / 0.15);
+    
+    /* Animation variables */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .dark {
@@ -96,10 +142,83 @@ All colors MUST be HSL.
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border font-inter;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased font-inter;
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 32;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Professional button variants using design system */
+  .btn-ocean {
+    @apply bg-gradient-to-r from-ocean-deep to-ocean-blue text-white;
+    box-shadow: var(--shadow-ocean);
+  }
+
+  .btn-trust {
+    @apply bg-gradient-to-r from-trust-gold to-trust-sunrise text-neutral-900 font-semibold;
+    box-shadow: var(--shadow-medium);
+  }
+
+  .btn-nature {
+    @apply bg-gradient-to-r from-mangrove-green to-ocean-medium text-white;
+    box-shadow: var(--shadow-success);
+  }
+
+  /* Professional card styles */
+  .card-premium {
+    @apply bg-white rounded-2xl p-6;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid hsl(var(--neutral-200));
+  }
+
+  .card-elevated {
+    @apply bg-white rounded-2xl p-8;
+    box-shadow: var(--shadow-strong);
+    border: 1px solid hsl(var(--neutral-100));
+  }
+
+  /* Dashboard layouts */
+  .dashboard-grid {
+    @apply grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  .stats-card {
+    @apply card-premium flex flex-col items-start justify-between min-h-[120px];
+    transition: var(--transition-smooth);
+  }
+
+  .stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-strong);
+  }
+
+  /* Professional gradients */
+  .gradient-ocean {
+    background: var(--gradient-ocean);
+  }
+
+  .gradient-trust {
+    background: var(--gradient-trust);
+  }
+
+  .gradient-nature {
+    background: var(--gradient-nature);
+  }
+
+  .gradient-premium {
+    background: var(--gradient-premium);
+  }
+
+  .gradient-surface {
+    background: var(--gradient-surface);
   }
 }
