@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import NewProjectModal from '@/components/project/NewProjectModal';
 import { 
   MapPin, 
   Camera, 
@@ -15,19 +16,8 @@ import {
 
 const NGODashboard: React.FC = () => {
   const { user, logout } = useAuth();
-  const [showNewProjectForm, setShowNewProjectForm] = useState(false);
-
-  const creditStats = [
-    {
-      title: 'Total Credits Earned',
-      value: '2,847',
-      change: '+12.5%',
-      icon: TrendingUp,
-      color: 'text-mangrove-green'
-    }
-  ];
-
-  const projects = [
+  const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [projects, setProjects] = useState([
     {
       id: 1,
       name: 'Sagar Mangrove Restoration',
@@ -55,7 +45,18 @@ const NGODashboard: React.FC = () => {
       hectares: 12.1,
       submittedDate: '2 weeks ago'
     }
+  ]);
+
+  const creditStats = [
+    {
+      title: 'Total Credits Earned',
+      value: '2,847',
+      change: '+12.5%',
+      icon: TrendingUp,
+      color: 'text-mangrove-green'
+    }
   ];
+
 
   const activities = [
     {
@@ -96,9 +97,21 @@ const NGODashboard: React.FC = () => {
   };
 
   const handleNewProject = () => {
-    setShowNewProjectForm(true);
-    // In a real app, this would open camera and location capture
-    alert('Opening camera with GPS location capture...\nAfter capturing photos and location, you will be prompted to enter project details.');
+    setShowNewProjectModal(true);
+  };
+
+  const handleProjectSubmit = (projectData: any) => {
+    const newProject = {
+      id: projects.length + 1,
+      name: projectData.name,
+      location: `${projectData.location.lat.toFixed(2)}, ${projectData.location.lng.toFixed(2)}`,
+      status: 'pending',
+      credits: 0,
+      hectares: Math.random() * 20 + 5, // Mock hectares for now
+      submittedDate: 'Just now'
+    };
+
+    setProjects(prev => [newProject, ...prev]);
   };
 
   return (
@@ -217,6 +230,13 @@ const NGODashboard: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* New Project Modal */}
+        <NewProjectModal 
+          isOpen={showNewProjectModal}
+          onClose={() => setShowNewProjectModal(false)}
+          onSubmit={handleProjectSubmit}
+        />
       </div>
     </div>
   );
