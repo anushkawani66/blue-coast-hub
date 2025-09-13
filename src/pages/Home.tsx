@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Shield, Building2, Leaf, Globe, TrendingUp } from 'lucide-react';
+import StatesModal from '@/components/ui/states-modal';
 
 const Home: React.FC = () => {
+  const [showStatesModal, setShowStatesModal] = useState(false);
   const portals = [
     {
       type: 'ngo',
@@ -59,7 +61,10 @@ const Home: React.FC = () => {
               <h3 className="text-2xl font-bold text-neutral-900">50,000+</h3>
               <p className="text-neutral-600">Hectares Restored</p>
             </div>
-            <div className="card-premium text-center">
+            <div 
+              className="card-premium text-center cursor-pointer hover:shadow-strong transition-all duration-300" 
+              onClick={() => setShowStatesModal(true)}
+            >
               <div className="w-12 h-12 bg-gradient-ocean rounded-xl mx-auto mb-4 flex items-center justify-center">
                 <Globe className="w-6 h-6 text-white" />
               </div>
@@ -135,6 +140,12 @@ const Home: React.FC = () => {
           </p>
         </div>
       </footer>
+
+      {/* States Modal */}
+      <StatesModal 
+        isOpen={showStatesModal} 
+        onClose={() => setShowStatesModal(false)} 
+      />
     </div>
   );
 };

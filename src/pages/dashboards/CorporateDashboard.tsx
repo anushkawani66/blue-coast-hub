@@ -337,7 +337,80 @@ const CorporateDashboard: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <Button className="w-full gradient-ocean text-white font-semibold">
+                  <Button 
+                    onClick={() => {
+                      // Create and download ESG report
+                      const reportData = {
+                        company: user?.organization || 'Your Company',
+                        period: 'Q4 2024',
+                        totalCredits: 5420,
+                        retiredCredits: 3200,
+                        co2Offset: '3,200 tons',
+                        mangroveArea: '45.7 hectares',
+                        communitiesImpacted: 850,
+                        investmentValue: '₹21.68 L',
+                        projects: ownedCredits,
+                        generatedDate: new Date().toLocaleDateString()
+                      };
+                      
+                      const reportContent = `
+BlueTrust ESG Impact Report
+${reportData.company}
+Generated: ${reportData.generatedDate}
+
+EXECUTIVE SUMMARY
+================
+Reporting Period: ${reportData.period}
+Total Carbon Credits Portfolio: ${reportData.totalCredits}
+Carbon Credits Retired for Offsetting: ${reportData.retiredCredits}
+Net CO₂ Offset Achieved: ${reportData.co2Offset}
+
+ENVIRONMENTAL IMPACT
+===================
+• Mangrove Ecosystems Supported: ${reportData.mangroveArea}
+• Communities Directly Impacted: ${reportData.communitiesImpacted} people
+• Total Investment in Blue Carbon: ${reportData.investmentValue}
+
+DETAILED PORTFOLIO BREAKDOWN
+============================
+${reportData.projects.map(credit => `
+Project: ${credit.project}
+Credits Owned: ${credit.credits}
+Purchase Date: ${credit.purchaseDate}
+Value: ${credit.value}
+Status: ${credit.status.toUpperCase()}
+`).join('')}
+
+VERIFICATION & COMPLIANCE
+========================
+• All carbon credits are verified by Government of India certifiers
+• Blockchain recorded for transparency and auditability
+• Meets CDP, GRI, and TCFD reporting standards
+• Real-time satellite monitoring ensures project integrity
+
+SUSTAINABILITY COMMITMENTS
+==========================
+Through BlueTrust, ${reportData.company} is contributing to:
+✓ UN Sustainable Development Goals (SDG 13, 14, 15)
+✓ India's Nationally Determined Contributions (NDCs)
+✓ Corporate Net Zero commitments
+✓ Biodiversity conservation and community empowerment
+
+This report demonstrates ${reportData.company}'s commitment to environmental stewardship and sustainable business practices through verified blue carbon investments.
+                      `;
+                      
+                      const blob = new Blob([reportContent], { type: 'text/plain' });
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.download = `${user?.organization || 'Company'}_ESG_Report_Q4_2024.txt`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="w-full gradient-ocean text-white font-semibold"
+                  >
                     <Download className="w-4 h-4 mr-2" />
                     Download Q4 2024 Report
                   </Button>
