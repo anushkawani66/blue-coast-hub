@@ -141,7 +141,7 @@ const GovernmentDashboard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-neutral-900">
-              Government Verification Portal
+              Verifier Portal
             </h1>
             <p className="text-neutral-600">{user?.name} • {user?.organization}</p>
           </div>
@@ -230,6 +230,49 @@ const GovernmentDashboard: React.FC = () => {
                         Review
                       </Button>
                     </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* All Projects Monitoring */}
+        <Card className="card-elevated mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="w-6 h-6 text-ocean-blue" />
+              All Projects Monitoring
+            </CardTitle>
+            <CardDescription>
+              Real-time monitoring of all registered restoration projects
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                { name: 'Sagar Mangrove Restoration', ngo: 'Sundarbans Conservation Society', location: 'West Bengal', status: 'Active', lastUpdate: '2 hours ago', credits: 847 },
+                { name: 'Coastal Protection Initiative', ngo: 'Coastal Conservation NGO', location: 'Gujarat', status: 'Monitoring', lastUpdate: '1 day ago', credits: 450 },
+                { name: 'Community Mangrove Farm', ngo: 'Kerala Marine Foundation', location: 'Kerala', status: 'Active', lastUpdate: '3 days ago', credits: 623 },
+                { name: 'Backwater Restoration Program', ngo: 'Odisha Coastal Initiative', location: 'Odisha', status: 'Pending Review', lastUpdate: '1 week ago', credits: 280 }
+              ].map((project, index) => (
+                <div key={index} className="card-premium p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <h3 className="font-semibold">{project.name}</h3>
+                      <p className="text-sm text-neutral-600">{project.ngo} • {project.location}</p>
+                    </div>
+                    <Badge className={
+                      project.status === 'Active' ? 'bg-mangrove-light text-mangrove-dark' :
+                      project.status === 'Monitoring' ? 'bg-ocean-light text-ocean-deep' :
+                      'bg-yellow-100 text-yellow-700'
+                    }>
+                      {project.status}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-neutral-600">Last Update: {project.lastUpdate}</span>
+                    <span className="font-semibold text-mangrove-green">{project.credits} credits</span>
+                  </div>
                 </div>
               ))}
             </div>

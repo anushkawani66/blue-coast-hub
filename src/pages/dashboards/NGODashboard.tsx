@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,46 +7,23 @@ import {
   MapPin, 
   Camera, 
   TrendingUp, 
-  Wallet, 
   Plus, 
-  FileText,
   CheckCircle,
   Clock,
-  Users,
   Leaf
 } from 'lucide-react';
 
 const NGODashboard: React.FC = () => {
   const { user, logout } = useAuth();
+  const [showNewProjectForm, setShowNewProjectForm] = useState(false);
 
-  const stats = [
+  const creditStats = [
     {
       title: 'Total Credits Earned',
       value: '2,847',
       change: '+12.5%',
       icon: TrendingUp,
       color: 'text-mangrove-green'
-    },
-    {
-      title: 'Credits for Sale',
-      value: '1,203',
-      change: 'Available',
-      icon: Wallet,
-      color: 'text-trust-gold'
-    },
-    {
-      title: 'Active Projects', 
-      value: '7',
-      change: '2 pending verification',
-      icon: MapPin,
-      color: 'text-ocean-blue'
-    },
-    {
-      title: 'Community Members',
-      value: '234',
-      change: '+18 this month',
-      icon: Users,
-      color: 'text-mangrove-medium'
     }
   ];
 
@@ -58,7 +35,7 @@ const NGODashboard: React.FC = () => {
       status: 'approved',
       credits: 847,
       hectares: 15.2,
-      image: '/api/placeholder/400/200'
+      submittedDate: '2 days ago'
     },
     {
       id: 2,
@@ -67,7 +44,7 @@ const NGODashboard: React.FC = () => {
       status: 'pending',
       credits: 0,
       hectares: 8.7,
-      image: '/api/placeholder/400/200'
+      submittedDate: '1 week ago'
     },
     {
       id: 3,
@@ -76,7 +53,34 @@ const NGODashboard: React.FC = () => {
       status: 'approved',
       credits: 623,
       hectares: 12.1,
-      image: '/api/placeholder/400/200'
+      submittedDate: '2 weeks ago'
+    }
+  ];
+
+  const activities = [
+    {
+      id: 1,
+      action: 'Report approved for Sagar Mangrove Restoration',
+      time: '2 hours ago',
+      details: '+45 credits earned',
+      icon: CheckCircle,
+      color: 'text-mangrove-green'
+    },
+    {
+      id: 2,
+      action: 'New monitoring report submitted',
+      time: '1 day ago',
+      details: 'Coastal Protection Initiative',
+      icon: Camera,
+      color: 'text-ocean-blue'
+    },
+    {
+      id: 3,
+      action: 'Project registration completed',
+      time: '3 days ago',
+      details: 'Community Mangrove Farm',
+      icon: Leaf,
+      color: 'text-mangrove-green'
     }
   ];
 
@@ -89,6 +93,12 @@ const NGODashboard: React.FC = () => {
       default:
         return <Badge variant="secondary">Unknown</Badge>;
     }
+  };
+
+  const handleNewProject = () => {
+    setShowNewProjectForm(true);
+    // In a real app, this would open camera and location capture
+    alert('Opening camera with GPS location capture...\nAfter capturing photos and location, you will be prompted to enter project details.');
   };
 
   return (
@@ -108,13 +118,13 @@ const NGODashboard: React.FC = () => {
         </div>
       </header>
 
-      <div className="p-6 max-w-7xl mx-auto">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => {
+      <div className="p-6 max-w-6xl mx-auto">
+        {/* Credits Stats */}
+        <div className="mb-8">
+          {creditStats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <Card key={index} className="stats-card">
+              <Card key={index} className="stats-card max-w-md">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-neutral-600">
                     {stat.title}
@@ -122,10 +132,10 @@ const NGODashboard: React.FC = () => {
                   <Icon className={`w-5 h-5 ${stat.color}`} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-neutral-900 mb-1">
+                  <div className="text-3xl font-bold text-neutral-900 mb-1">
                     {stat.value}
                   </div>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-sm text-neutral-500">
                     {stat.change}
                   </p>
                 </CardContent>
@@ -134,121 +144,76 @@ const NGODashboard: React.FC = () => {
           })}
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card className="card-premium">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="w-5 h-5 text-mangrove-green" />
-                Register New Restoration Site
-              </CardTitle>
-              <CardDescription>
-                Start a new mangrove restoration project and begin earning carbon credits
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full gradient-nature text-white font-semibold">
-                <MapPin className="w-4 h-4 mr-2" />
-                Register Project
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="card-premium">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-ocean-blue" />
-                Submit Monitoring Report
-              </CardTitle>
-              <CardDescription>
-                Upload photos and data from your latest site monitoring visit
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full gradient-ocean text-white font-semibold">
-                <Camera className="w-4 h-4 mr-2" />
-                Upload Report
-              </Button>
-            </CardContent>
-          </Card>
+        {/* New Project Button */}
+        <div className="mb-8">
+          <Button 
+            onClick={handleNewProject}
+            className="gradient-nature text-white font-semibold h-16 px-8 text-lg"
+          >
+            <Plus className="w-6 h-6 mr-3" />
+            New Project
+          </Button>
         </div>
 
-        {/* My Restorations */}
-        <Card className="card-elevated">
+        {/* My Projects */}
+        <Card className="card-elevated mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Leaf className="w-6 h-6 text-mangrove-green" />
-              My Restoration Projects
+              My Projects
             </CardTitle>
-            <CardDescription>
-              Track the progress of your mangrove restoration initiatives
-            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="space-y-4">
               {projects.map((project) => (
-                <Card key={project.id} className="card-premium">
-                  <div className="aspect-video bg-gradient-nature rounded-lg mb-4 flex items-center justify-center">
-                    <Leaf className="w-8 h-8 text-white" />
+                <div key={project.id} className="card-premium p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold text-lg">{project.name}</h3>
+                    {getStatusBadge(project.status)}
                   </div>
-                  <CardHeader className="pt-0">
-                    <div className="flex items-start justify-between">
-                      <CardTitle className="text-lg">{project.name}</CardTitle>
-                      {getStatusBadge(project.status)}
+                  <p className="text-neutral-600 flex items-center gap-1 mb-3">
+                    <MapPin className="w-4 h-4" />
+                    {project.location}
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="text-neutral-600">Credits</p>
+                      <p className="font-semibold text-mangrove-green">{project.credits}</p>
                     </div>
-                    <CardDescription className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      {project.location}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-neutral-600">Credits Earned</p>
-                        <p className="font-semibold text-mangrove-green">{project.credits}</p>
-                      </div>
-                      <div>
-                        <p className="text-neutral-600">Area Restored</p>
-                        <p className="font-semibold text-ocean-blue">{project.hectares} ha</p>
-                      </div>
+                    <div>
+                      <p className="text-neutral-600">Area</p>
+                      <p className="font-semibold text-ocean-blue">{project.hectares} ha</p>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div>
+                      <p className="text-neutral-600">Submitted</p>
+                      <p className="font-semibold">{project.submittedDate}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        {/* Activity Feed */}
-        <Card className="card-premium mt-8">
+        {/* My Activity */}
+        <Card className="card-premium">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>My Activity</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-mangrove-surface rounded-lg">
-                <CheckCircle className="w-5 h-5 text-mangrove-green" />
-                <div>
-                  <p className="font-medium">Report approved for Sagar Mangrove Restoration</p>
-                  <p className="text-sm text-neutral-600">2 hours ago • +45 credits earned</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 bg-ocean-surface rounded-lg">
-                <Clock className="w-5 h-5 text-ocean-blue" />
-                <div>
-                  <p className="font-medium">New monitoring report submitted</p>
-                  <p className="text-sm text-neutral-600">1 day ago • Coastal Protection Initiative</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 bg-trust-gold/10 rounded-lg">
-                <Wallet className="w-5 h-5 text-trust-gold" />
-                <div>
-                  <p className="font-medium">200 credits sold to TechCorp India</p>
-                  <p className="text-sm text-neutral-600">3 days ago • ₹8,000 received</p>
-                </div>
-              </div>
+              {activities.map((activity) => {
+                const Icon = activity.icon;
+                return (
+                  <div key={activity.id} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
+                    <Icon className={`w-5 h-5 ${activity.color}`} />
+                    <div className="flex-1">
+                      <p className="font-medium">{activity.action}</p>
+                      <p className="text-sm text-neutral-600">{activity.time} • {activity.details}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>

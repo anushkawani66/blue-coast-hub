@@ -26,11 +26,11 @@ const getUserTypeConfig = (type: UserType) => {
       };
     case 'government':
       return {
-        title: 'Government Verifier Portal',
+        title: 'Verifier Portal',
         description: 'Verify projects and manage the national carbon registry',
         icon: Shield,
         gradient: 'gradient-ocean',
-        placeholder: 'official@nccr.gov.in'
+        placeholder: 'verifier@nccr.gov.in'
       };
     case 'corporate':
       return {
